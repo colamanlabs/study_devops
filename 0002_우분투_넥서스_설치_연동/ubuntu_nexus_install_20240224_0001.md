@@ -336,14 +336,237 @@ nexus@D3-VM-DEV-01:~$
 
 ## 2.4 환경구성 2 (넥서스 배포)
 
-### 2.4.1 넥서스 배포 디렉토리 구성 및 배포, 권한설정 
+### 2.4.1 넥서스 다운로드, 디렉토리 구성 및 배포, 권한설정 
 https://velog.io/@cptbluebear/Nexus3-Repository-%EA%B5%AC%EC%B6%95
 
 
-```
+#### 2.4.1.1 넥서스 다운로드 
+wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
 
 ```
 
-## 2.5 넥서스 설정 파일 구성
+### wget 으로 다운로드 
+
+nexus@D3-VM-DEV-01:~/WORKS$
+nexus@D3-VM-DEV-01:~/WORKS$ wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+--2024-02-24 12:42:24--  https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+download.sonatype.com (download.sonatype.com) 해석 중... 54.219.226.64, 54.193.38.195
+다음으로 연결 중: download.sonatype.com (download.sonatype.com)|54.219.226.64|:443... 연결했습니다.
+HTTP 요청을 보냈습니다. 응답 기다리는 중... 302 Moved Temporarily
+위치: https://sonatype-download.global.ssl.fastly.net/repository/downloads-prod-group/3/nexus-3.65.0-02-unix.tar.gz [따라감]
+--2024-02-24 12:42:24--  https://sonatype-download.global.ssl.fastly.net/repository/downloads-prod-group/3/nexus-3.65.0-02-unix.tar.gz
+sonatype-download.global.ssl.fastly.net (sonatype-download.global.ssl.fastly.net) 해석 중... 146.75.49.194
+다음으로 연결 중: sonatype-download.global.ssl.fastly.net (sonatype-download.global.ssl.fastly.net)|146.75.49.194|:443... 연결했습니다.
+HTTP 요청을 보냈습니다. 응답 기다리는 중... 200 OK
+길이: 231860503 (221M) [application/x-gzip]
+저장 위치: ‘latest-unix.tar.gz’
+
+latest-unix.tar.gz                        100%[====================================================================================>] 221.12M  7.05MB/s    / 31s
+
+2024-02-24 12:42:56 (7.04 MB/s) - ‘latest-unix.tar.gz’ 저장함 [231860503/231860503]
+
+nexus@D3-VM-DEV-01:~/WORKS$
 
 
+### 파일 압축 해제
+``` 
+nexus@D3-VM-DEV-01:~/WORKS$ tar xvf ./latest-unix.tar.gz
+...
+nexus@D3-VM-DEV-01:~/WORKS$
+
+
+
+#### 2.4.1.2 디렉토리 생성 및 배포
+
+```
+### 배포 
+root@D3-VM-DEV-01:/home/colaman# cd /opt
+root@D3-VM-DEV-01:/opt# mv /home/nexus/WORKS/nexus-3.65.0-02/ .
+root@D3-VM-DEV-01:/opt# mv /home/nexus/WORKS/sonatype-work/ .
+root@D3-VM-DEV-01:/opt#
+
+### 소프트링크 생성 
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# ln -s /opt/nexus-3.65.0-02 /opt/nexus
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# ls -al
+합계 20
+drwxr-xr-x  5 root  root  4096  2월 24 12:47 .
+drwxr-xr-x 20 root  root  4096  2월 24 11:12 ..
+drwxr-xr-x  3 root  root  4096  2월 24 11:28 google
+lrwxrwxrwx  1 root  root    20  2월 24 12:47 nexus -> /opt/nexus-3.65.0-02
+drwxrwxr-x 10 nexus nexus 4096  2월 24 12:44 nexus-3.65.0-02
+drwxrwxr-x  3 nexus nexus 4096  2월 24 12:44 sonatype-work
+root@D3-VM-DEV-01:/opt#
+
+### 테스트
+nexus@D3-VM-DEV-01:~/WORKS$ cd /opt/nexus
+nexus@D3-VM-DEV-01:/opt/nexus$ pwd
+/opt/nexus
+nexus@D3-VM-DEV-01:/opt/nexus$ ls -al
+합계 108
+drwxrwxr-x 10 nexus nexus  4096  2월 24 12:44 .
+drwxr-xr-x  5 root  root   4096  2월 24 12:47 ..
+drwxrwxr-x  2 nexus nexus  4096  2월 24 12:44 .install4j
+-rw-r--r--  1 nexus nexus   651  1월 25 14:18 NOTICE.txt
+-rw-r--r--  1 nexus nexus 17321  1월 25 14:18 OSS-LICENSE.txt
+-rw-r--r--  1 nexus nexus 41955  1월 25 14:18 PRO-LICENSE.txt
+drwxrwxr-x  3 nexus nexus  4096  2월 24 12:44 bin
+drwxrwxr-x  2 nexus nexus  4096  2월 24 12:44 deploy
+drwxrwxr-x  7 nexus nexus  4096  2월 24 12:44 etc
+drwxrwxr-x  5 nexus nexus  4096  2월 24 12:44 lib
+drwxrwxr-x  2 nexus nexus  4096  2월 24 12:44 public
+drwxrwxr-x  3 nexus nexus  4096  2월 24 12:44 replicator
+drwxrwxr-x 23 nexus nexus  4096  2월 24 12:44 system
+nexus@D3-VM-DEV-01:/opt/nexus$
+
+```
+
+
+## 2.5 넥서스 설정 파일 구성, 환경구성 
+
+### 2.5.1 /opt/nexus/bin/nexus.rc 수정
+/opt/nexus/bin/nexus.rc 파일을 수정한다.\
+run_as_user 에 실행유저를 지정한다.
+
+```
+### 수정 파일 경로
+nexus@D3-VM-DEV-01:/opt/nexus/bin$ ls -al /opt/nexus/bin/nexus.rc
+-rw-r--r-- 1 nexus nexus 20  2월 24 12:50 /opt/nexus/bin/nexus.rc
+nexus@D3-VM-DEV-01:/opt/nexus/bin$
+
+### nexus.rc 수정 
+nexus@D3-VM-DEV-01:/opt/nexus/bin$ diff ./nexus.rc ./nexus.rc.20240224_124900
+1c1
+< run_as_user="nexus"
+---
+> #run_as_user=""
+\ 파일 끝 개행 문자 없음
+nexus@D3-VM-DEV-01:/opt/nexus/bin$
+
+
+### nexus.rc 파일내용 
+### 실행유저 말고는 없다.
+nexus@D3-VM-DEV-01:/opt/nexus/bin$ cat /opt/nexus/bin/nexus.rc
+run_as_user="nexus"
+nexus@D3-VM-DEV-01:/opt/nexus/bin$
+```
+
+
+### 2.5.2 /opt/nexus/bin/nexus.vmoptions 수정
+
+```
+### 기본 설정(변경전)
+nexus@D3-VM-DEV-01:/opt/nexus/bin$ cat nexus.vmoptions
+
+-Xms2703m
+-Xmx2703m
+-XX:MaxDirectMemorySize=2703m
+-XX:+UnlockDiagnosticVMOptions
+-XX:+LogVMOutput
+-XX:LogFile=../sonatype-work/nexus3/log/jvm.log
+-XX:-OmitStackTraceInFastThrow
+-Djava.net.preferIPv4Stack=true
+-Dkaraf.home=.
+-Dkaraf.base=.
+-Dkaraf.etc=etc/karaf
+-Djava.util.logging.config.file=etc/karaf/java.util.logging.properties
+-Dkaraf.data=../sonatype-work/nexus3
+-Dkaraf.log=../sonatype-work/nexus3/log
+-Djava.io.tmpdir=../sonatype-work/nexus3/tmp
+-Dkaraf.startLocalConsole=false
+-Djdk.tls.ephemeralDHKeySize=2048
+#
+# additional vmoptions needed for Java9+
+#
+# --add-reads=java.xml=java.logging
+# --add-exports=java.base/org.apache.karaf.specs.locator=java.xml,ALL-UNNAMED
+# --patch-module java.base=${KARAF_HOME}/lib/endorsed/org.apache.karaf.specs.locator-4.3.9.jar
+# --patch-module java.xml=${KARAF_HOME}/lib/endorsed/org.apache.karaf.specs.java.xml-4.3.9.jar
+# --add-opens java.base/java.security=ALL-UNNAMED
+# --add-opens java.base/java.net=ALL-UNNAMED
+# --add-opens java.base/java.lang=ALL-UNNAMED
+# --add-opens java.base/java.util=ALL-UNNAMED
+# --add-opens java.naming/javax.naming.spi=ALL-UNNAMED
+# --add-opens java.rmi/sun.rmi.transport.tcp=ALL-UNNAMED
+# --add-exports=java.base/sun.net.www.protocol.http=ALL-UNNAMED
+# --add-exports=java.base/sun.net.www.protocol.https=ALL-UNNAMED
+# --add-exports=java.base/sun.net.www.protocol.jar=ALL-UNNAMED
+# --add-exports=jdk.xml.dom/org.w3c.dom.html=ALL-UNNAMED
+# --add-exports=jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED
+# --add-exports java.security.sasl/com.sun.security.sasl=ALL-UNNAMED
+#
+# comment out this vmoption when using Java9+
+#
+-Djava.endorsed.dirs=lib/endorsed
+nexus@D3-VM-DEV-01:/opt/nexus/bin$
+
+
+### 변경후
+일단 기본 옵션으로 실행한다.
+```
+
+
+
+## 2.6 systemd 서비스로 등록
+
+https://velog.io/@cptbluebear/Nexus3-Repository-%EA%B5%AC%EC%B6%95 참고한다.
+
+### 2.6.1 /etc/systemd/system/nexus.service 파일을 생성한다.
+```
+### /etc/systemd/system/nexus.service 파일을 생성한다.
+
+root@D3-VM-DEV-01:/opt# cat /etc/systemd/system/nexus.service
+[Unit]
+Description=nexus service
+After=network.target
+
+[Service]
+Type=forking
+LimitNOFILE=65536 # 해당 옵션은 환경에 맞게 적절히 수정한다.
+ExecStart=/opt/nexus/bin/nexus start
+ExecStop=/opt/nexus/bin/nexus stop
+User=nexus
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+
+root@D3-VM-DEV-01:/opt#
+```
+
+
+### 2.6.2 systemd 서비스로 등록하고 확인한다.
+
+```
+systemctl daemon-reload
+systemctl enable nexus.service
+systemctl start nexus.service
+systemctl status nexus.service
+
+
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# systemctl daemon-reload
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# systemctl enable nexus.service
+Created symlink /etc/systemd/system/multi-user.target.wants/nexus.service → /etc/systemd/system/nexus.service.
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# systemctl start nexus.service
+root@D3-VM-DEV-01:/opt#
+root@D3-VM-DEV-01:/opt# systemctl status nexus.service
+● nexus.service - nexus service
+     Loaded: loaded (/etc/systemd/system/nexus.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2024-02-24 12:58:04 KST; 16s ago
+    Process: 1761 ExecStart=/opt/nexus/bin/nexus start (code=exited, status=0/SUCCESS)
+   Main PID: 1968 (java)
+      Tasks: 46 (limit: 19091)
+     Memory: 1.2G
+        CPU: 25.634s
+     CGroup: /system.slice/nexus.service
+             └─1968 /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -server -Dinstall4j.jvmDir=/usr/lib/jvm/java-8-openjdk-amd64/jre -Dexe4j.moduleName=/opt/nexus/bin/nexus -XX:+UnlockDiagnosticVMOptions -Dinstall4j.launcherId=245 -Din>
+
+ 2월 24 12:58:03 D3-VM-DEV-01 systemd[1]: Starting nexus service...
+ 2월 24 12:58:04 D3-VM-DEV-01 nexus[1761]: Starting nexus
+ 2월 24 12:58:04 D3-VM-DEV-01 systemd[1]: Started nexus service.
+lines 1-14/14 (END)
+```
