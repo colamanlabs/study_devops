@@ -121,11 +121,8 @@ C:\WORKS\WORKS_STS4_GITHUB\STS4\sts-4.21.0.RELEASE\maven\repository
 2. 좌측 메뉴에서 Maven > User Settings 선택
 
 3. User Settings 의 중간 "User Settings" 에 생성한 settings.xml 을 지정 
-
-
-![](image/capture_2024-02-24_142642.png "User Settings")
-
 ```
+![](image/capture_2024-02-24_142642.png "User Settings")
 
 
 # 5. 빌드 테스트
