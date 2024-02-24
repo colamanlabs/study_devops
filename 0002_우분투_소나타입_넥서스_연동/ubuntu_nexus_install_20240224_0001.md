@@ -129,7 +129,7 @@ Why need the switch to Java 11/17 so long? Is the technical dept so high?
 
 ```
 
-### 설치 계획
+## 2.2 VM 설치계획
 ```
 - 별도 계정으로 실행된다면
     - 아마도 기본 설치된 자바(/usr/bin/java, 혹은 /usr/local/bin/java 등 ..)를 호출 할 것이다.
@@ -139,68 +139,10 @@ Why need the switch to Java 11/17 so long? Is the technical dept so high?
 - 기본설치 자바가 Java 8 인 별도 VM 을 만들자.
     - 나중에 Java 8 에 의존성을 갖는 것들은 여기서 테스트 하자.
     - 포트포워딩 설정없이 바로 접속 가능하도록
-        - 네트워크 어댑터 설정은 "어댑터에 브리지" 로 하고 고정 IP 부여한다.
+        - 네트워크 어댑터 설정은 "어댑터에 브리지" 로 하고 고정 IP 를 부여한다.
 ```
 
 
 
 
 
-
-
-colaman@D3-VM-DEV-00:~$
-colaman@D3-VM-DEV-00:~$ lsb_release -a
-No LSB modules are available.
-Distributor ID: Ubuntu
-Description:    Ubuntu 22.04.4 LTS
-Release:        22.04
-Codename:       jammy
-colaman@D3-VM-DEV-00:~$
-colaman@D3-VM-DEV-00:~$
-colaman@D3-VM-DEV-00:~$ java -version
-명령어 'java' 을(를) 찾을 수 없습니다. 그러나 다음을 통해 설치할 수 있습니다:
-sudo apt install openjdk-11-jre-headless  # version 11.0.20.1+1-0ubuntu1~22.04, or
-sudo apt install default-jre              # version 2:1.11-72build2
-sudo apt install openjdk-17-jre-headless  # version 17.0.8.1+1~us1-0ubuntu1~22.04
-sudo apt install openjdk-18-jre-headless  # version 18.0.2+9-2~22.04
-sudo apt install openjdk-19-jre-headless  # version 19.0.2+7-0ubuntu3~22.04
-sudo apt install openjdk-8-jre-headless   # version 8u382-ga-1~22.04.1
-colaman@D3-VM-DEV-00:~$
-colaman@D3-VM-DEV-00:~$
-
-```
-
-
-
-
-
-
-
-https://community.sonatype.com/t/run-on-java-11/6582
-
-Neil Benn
-May '21
-Hello,
-
-Is there any way to get Nexus repository working with JDK11; it is very difficult to install JDK8 on Debian Buster.
-
-Cheers,
-
-Neil
-
-
-조금 지나긴 했는데, Java 8 을 설치해야 할 것 같다.
-
-```
-[quote="Dawid Sawa, post:2, topic:6582, full:true, username:dsawa"]
-No, unfortunately OpenJDK 8 is the only version that’s currently supported, but we are working on making Nexus Repository work on newer JDKs. No ETA yet.
-[/quote]
-...
-
-[quote="Rafał Kędziorski, post:7, topic:6582, full:true, username:rafal.kedziorski"]
-We have 2023 and Java 21 is out. And Nexus works only with Java 8.
-
-Why need the switch to Java 11/17 so long? Is the technical dept so high?
-[/quote]
-
-```
