@@ -108,8 +108,8 @@ https://download.sonatype.com/nexus/3/latest-unix.tar.gz
 ```
 
 ## 2.1 Java 환경
-Java 8 을 요구한다.
-검색으로 찾은 설치 게시글이 모두 Java 8 로 설치했고, 
+Java 8 을 요구한다.\
+검색으로 찾은 설치 게시글이 모두 Java 8 로 설치했고,\
 소나타입 커뮤니티 글을 보면 Java 8 만 지원한다고 한다.
 
 ```
@@ -134,7 +134,7 @@ https://github.com/sonatype/nexus-public/issues/118
 
 ```
 
-## 2.2 VM 설치계획
+## 2.2 NEXUS 설치환경 검토
 ```
 - 별도 계정으로 실행된다면
     - 아마도 기본 설치된 자바(/usr/bin/java, 혹은 /usr/local/bin/java 등 ..)를 호출 할 것이다.
@@ -145,6 +145,36 @@ https://github.com/sonatype/nexus-public/issues/118
     - 나중에 Java 8 에 의존성을 갖는 것들은 여기서 테스트 하자.
     - 포트포워딩 설정없이 바로 접속 가능하도록
         - 네트워크 어댑터 설정은 "어댑터에 브리지" 로 하고 고정 IP 를 부여한다.
+		
+- 시스템 기본설정, 원격관리 위한 기본 환경 구성
+	- 크롬 설치
+	- D2Coding 폰트 설치(공홈 다운로드)
+	- Visual Studio Code 설치 (공홈 다운로드,  텍스트 에디터 목적)
+	- net-tools 설치(apt, ifconfig 등)
+	- openssh-server 설치(apt, 원격 SSH 콘솔 접속용)
+	- openjdk-8-jdk
+```
+
+
+```
+### 설치후 점검
+colaman@D3-VM-DEV-01:~$
+
+### 우분투 버전 
+colaman@D3-VM-DEV-01:~$ lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+colaman@D3-VM-DEV-01:~$
+
+### Java 버전
+colaman@D3-VM-DEV-01:~$ java -version
+openjdk version "1.8.0_392"
+OpenJDK Runtime Environment (build 1.8.0_392-8u392-ga-1~22.04-b08)
+OpenJDK 64-Bit Server VM (build 25.392-b08, mixed mode)
+colaman@D3-VM-DEV-01:~$
 ```
 
 
