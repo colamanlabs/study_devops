@@ -678,7 +678,7 @@ The setup tasks have been completed, enjoy using Nexus Repository Manager!
 레이어 위저드가 닫힌다.\
 설치 완료
 
-
+![](image/capture_2024-02-24_131834.png "설치완료후 첫화면")
 
 
 
