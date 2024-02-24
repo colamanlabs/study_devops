@@ -113,6 +113,7 @@ Java 8 을 요구한다.
 소나타입 커뮤니티 글을 보면 Java 8 만 지원한다고 한다.
 
 ```
+[참고 URL 1]
 https://community.sonatype.com/t/run-on-java-11/6582
 ...
 
@@ -126,6 +127,10 @@ We have 2023 and Java 21 is out. And Nexus works only with Java 8.
 
 Why need the switch to Java 11/17 so long? Is the technical dept so high?
 [/quote]
+
+
+[참고 URL 2]
+https://github.com/sonatype/nexus-public/issues/118
 
 ```
 
