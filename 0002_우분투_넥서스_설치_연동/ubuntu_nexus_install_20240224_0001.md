@@ -570,3 +570,124 @@ root@D3-VM-DEV-01:/opt# systemctl status nexus.service
  2월 24 12:58:04 D3-VM-DEV-01 systemd[1]: Started nexus service.
 lines 1-14/14 (END)
 ```
+
+
+
+
+### 3. nexus 대시보드 접근
+
+#### 3.1 웹브라우저로 nexus 대시보드 접근
+
+```
+웹 브라우져를 열고, 아래 주소를 입력해서 열리는지 확인한다.
+
+http://$넥서스_설치_장비_IP:8081/
+
+```
+
+
+#### 3.2 우측 상단 "Sign in" 버튼 선택 
+
+```
+##### 최초 접근 인증 정보 파일 정보가 있다.
+
+Your admin user password is located in
+/opt/sonatype-work/nexus3/admin.password on the server.
+
+
+#####  파일 확인 
+root@D3-VM-DEV-01:/opt/sonatype-work/nexus3# ls -al /opt/sonatype-work/nexus3/admin.password
+-rw-r--r-- 1 nexus nexus 36  2월 24 12:58 /opt/sonatype-work/nexus3/admin.password
+root@D3-VM-DEV-01:/opt/sonatype-work/nexus3#
+
+
+##### 로그인
+ID : admin 
+PWD : 기본 최초값
+
+입력하면 로그인 된다.
+```
+
+#### 3.3 Setup 위저드 진행
+로그인 하면 레이어로 Setup 위저드가 열린다.
+
+```
+[STEP 1]
+Setup1 of 4
+This wizard will help you complete required setup tasks.
+
+
+[STEP 2]
+Please choose a password for the admin user2 of 4
+어드민 새 비번을 넣는다.
+
+
+[STEP 3]
+
+Configure Anonymous Access3 of 4
+Enable anonymous access means that by default, users can search, browse and download components from repositories without credentials. Please consider the security implications for your organization.
+Disable anonymous access should be chosen with care, as it will require credentials for all users and/or build tools.
+
+More information
+
+Enable anonymous access
+Disable anonymous access
+
+"Enable anonymous access" 로 선택한다.
+
+
+https://help.sonatype.com/en/anonymous-access.html
+
+"More information" 에서 내용을 보니, 나중에 바꿀 수 있다고 한다.
+You can enable or disable anonymous access in Sonatype Nexus Repository by navigating to Administration → Security → Anonymous Access.
+
+
+
+찾은 글이 2개 인데, 첫번째 글은 익명 접근을 차단하였고, 두번째 글은 익명 접근을 허용하였다.
+나중에 바꿀 수 있고, 익명접근 차단시 계정 생성, 권한 부여등 추가 작업이 있을 것이므로,
+일단 익명접근을 허용으로 한다.
+
+
+https://devocean.sk.com/blog/techBoardDetail.do?ID=163423
+Enable Anonymous Access:
+기본적으로 사용자들이 자격증명(credential) 없이 접속할 수 있도록 허용한다.
+검색, 브라우징, 컴포넌트 다운로드를 리포지토리로 부터 수행할 수 있다.
+조직 내 보안 규정을 고려하여 신중히 선택한다.
+
+Disable Anonymous Access:
+자격증명이 있는 사용자만이 접근할 수 있도록 제한한다.
+
+우리는 여기서 Disable Anonymous Access 를 선택하였다.
+
+https://nextculture.github.io/nexus/
+변경 중 Enable anonymous access 체크박스 체크 해줄 것
+상단 톱니바퀴 - Security - Anonymous 에서도 설정 가능
+
+
+
+[STEP 4] 완료 
+Complete4 of 4
+The setup tasks have been completed, enjoy using Nexus Repository Manager!
+
+``` 
+
+
+
+#### 3.4 설치 완료
+
+레이어 위저드가 닫힌다.\
+설치 완료
+
+
+
+
+
+### 4. 프로젝트 생성 및 pom.xml 수정
+연동은 별도 문서로 하자.
+
+
+
+#
+#
+# -- 끝 --
+#
