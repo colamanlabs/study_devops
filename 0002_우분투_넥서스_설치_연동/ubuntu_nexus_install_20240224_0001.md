@@ -152,7 +152,7 @@ https://github.com/sonatype/nexus-public/issues/118
 	- Visual Studio Code 설치 (공홈 다운로드,  텍스트 에디터 목적)
 	- net-tools 설치(apt, ifconfig 등)
 	- openssh-server 설치(apt, 원격 SSH 콘솔 접속용)
-	- openjdk-8-jdk
+	- openjdk-8-jdk(apt)
 ```
 
 
@@ -179,5 +179,171 @@ colaman@D3-VM-DEV-01:~$
 
 
 
+
+## 2.3 환경구성 1 (계정생성, 운영환경 구성)
+
+### 2.3.1 참고 URL
+```
+https://confluence.curvc.com/pages/viewpage.action?pageId=20251565
+useradd nexus
+su - nexus
+
+
+https://blog.naver.com/ncloud24/222906308566
+- CENTOS 기반 설명이나, 넥서스 환경 설정 파일 설명이 있다.
+
+
+https://khs9628.github.io/2022/01/07/2201_Nexus/
+- 우분투 기반 설명 이다.
+
+
+https://ko.linux-console.net/?p=3525
+- 외국어 작성글을 한국어로 번역한 것 같다.
+
+
+https://velog.io/@cptbluebear/Nexus3-Repository-%EA%B5%AC%EC%B6%95
+- 우분투 기반 설명 이다.
+- 상세하다.
+```
+
+
+
+### 2.3.2 계정 설정
+```
+       -d, --home-dir HOME_DIR
+           The new user will be created using HOME_DIR as the value for the user's login directory. The default is to
+           append the LOGIN name to BASE_DIR and use that as the login directory name. The directory HOME_DIR does
+           not have to exist but will not be created if it is missing.
+
+
+       -s, --shell SHELL
+           The name of the user's login shell. The default is to leave this field blank, which causes the system to
+           select the default login shell specified by the SHELL variable in /etc/default/useradd, or an empty string
+           by default.
+
+```
+```
+## 1. 유저홈을 어디 둘 것인가?
+공통 유저홈(/home) 아래에 둔다.
+- nexus:nexus 
+
+## 2. 설치 위치를 어디로 할 것인가?
+/opt/nexus/
+/opt/sonatype-work/
+
+## 3. 계정의 리소스 권한은?
+colaman@D3-VM-DEV-01:~$ ulimit -a | grep "open files"
+open files                          (-n) 1024
+colaman@D3-VM-DEV-01:~$
+
+현재 1024 다.
+
+### 3.1 기본 리소스 정책 변경하면
+https://deepblue28.tistory.com/entry/ubuntu-open-files-limit-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0
+
+#### 시스템 전체 설정 가능 값 
+#### 충분하다.
+system-wide limit on the number of open files for all processes
+colaman@D3-VM-DEV-01:~$ cat /proc/sys/fs/file-max
+9223372036854775807
+colaman@D3-VM-DEV-01:~$
+
+https://joonyon.tistory.com/entry/Linux-5%EB%B6%84%EC%9D%B4%EB%A9%B4-%EA%B0%80%EB%8A%A5-ulimit-%ED%99%95%EC%9D%B8-%EB%B0%8F-%EC%84%A4%EC%A0%95-%EB%B0%A9%EB%B2%95feat-open-files
+
+#### /etc/security/limits.conf 수정 
+root@D3-VM-DEV-01:/etc/security# ls -al /etc/security/limits.conf
+-rw-r--r-- 1 root root 2199  2월 24 12:06 /etc/security/limits.conf
+root@D3-VM-DEV-01:/etc/security# 
+root@D3-VM-DEV-01:/etc/security# vi limits.conf
+...
+root@D3-VM-DEV-01:/etc/security#
+root@D3-VM-DEV-01:/etc/security# diff ./limits.conf ./limits.conf.20240224
+56,72d55
+<
+<
+< # nofile - max number of open file descriptors
+< # 2024.02.24
+< colaman               soft    nofile  131072
+< colaman               hard    nofile  131072
+< nexus         soft    nofile  65536
+< nexus         hard    nofile  65536
+<
+< # nproc - max number of processes
+< # 2024.02.24
+< colaman         soft    nproc  131072
+< colaman         hard    nproc  131072
+< nexus           soft    nproc  65536
+< nexus           hard    nproc  65536
+<
+<
+74d56
+<
+root@D3-VM-DEV-01:/etc/security#
+
+reboot 한다. 
+
+
+## 변경전
+colaman@D3-VM-DEV-01:~$ ulimit -a
+...
+open files                          (-n) 1024
+...
+max user processes                  (-u) 63639
+...
+colaman@D3-VM-DEV-01:~$
+
+## 변경후 
+colaman@D3-VM-DEV-01:~$ ulimit -a
+...
+open files                          (-n) 131072
+...
+POSIX message queues         (bytes, -q) 819200
+...
+max user processes                  (-u) 131072
+...
+colaman@D3-VM-DEV-01:~$
+
+colaman 계정에 적용이 되었으니,
+nexus 계정에도 적용이 될 것이다.
+
+
+### 유저 생성
+useradd -d /home/nexus -m -s /bin/bash nexus
+
+### 유저 삭제
+userdel -r nexus 
+
+
+
+## 4. nexus 계정 생성 및 리소스 설정 확인 
+root@D3-VM-DEV-01:/home#
+root@D3-VM-DEV-01:/home# useradd -d /home/nexus -m -s /bin/bash nexus
+root@D3-VM-DEV-01:/home# passwd nexus
+새 암호:
+새 암호 다시 입력:
+passwd: 암호를 성공적으로 업데이트했습니다
+root@D3-VM-DEV-01:/home#
+
+nexus@D3-VM-DEV-01:~$ ulimit -a
+...
+open files                          (-n) 65536
+...
+max user processes                  (-u) 65536
+...
+nexus@D3-VM-DEV-01:~$
+```
+
+
+## 2.4 환경구성 2 (넥서스 배포)
+
+### 2.4.1 넥서스 배포 디렉토리 구성 및 배포, 권한설정 
+https://velog.io/@cptbluebear/Nexus3-Repository-%EA%B5%AC%EC%B6%95
+
+
+```
+
+```
+
+## 2.5 넥서스 설정 파일 구성
 
 
